@@ -5,7 +5,8 @@
 #include "Hazel/Events/MouseEvent.h"
 #include "Hazel/Events/KeyEvent.h"
 
-#include "glad/glad.h"
+#include "Platform/OpenGL/OpenGLContext.h"
+
 
 namespace Hazel {
 #pragma region //全局变量和静态函数
@@ -46,6 +47,8 @@ namespace Hazel {
 
 		HZ_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
+
+
 		//这里的判断是为了  初始化GLFW一次
 		if (!s_GLFWInitialized)
 		{
@@ -58,14 +61,13 @@ namespace Hazel {
 			s_GLFWInitialized = true;
 		}
 
+
 		//通过GLFW_API 创建 GLFW窗口对象 与之关联的 OpenGL 上下文。
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		//设置GLFW窗口的上下文 == OpenGl上下文 并与 窗口进行绑定
-		glfwMakeContextCurrent(m_Window);
-		//加载OpenGL函数指针  这里的gladLoadGLLoader函数  用来加载OpenGL函数指针  
-		//					  这里的glfwGetProcAddress函数  用来获取OpenGL函数地址		
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		HZ_CORE_ASSERT(status, "Failed to initailize Glad");
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();//初始化渲染上下文
+		
+		
 		//给GLFW窗口 设置 自定义窗口数据
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
@@ -181,8 +183,7 @@ namespace Hazel {
 
 	void WindowsWindow::OnUpdate()
 	{
-		glfwPollEvents();//拉取事件  处理事件
-		glfwSwapBuffers(m_Window);//交换缓冲区
+		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

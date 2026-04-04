@@ -7,25 +7,27 @@ namespace Hazel {
 	class HAZEL_API KeyEvent : public Event
 	{
 	public:
-		//?????????????ü???????
+		// 获取按键事件的键码
 		inline int GetKeyCode() const { return m_KeyCode; }
-		//??????  ??????? ?? ??????? ????????? <???o????>??????????
+		// 键盘事件  属于键盘类别 和 输入类别  属于多个类别<用位运算实现>的事件处理机制
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
-		KeyEvent(int keycode) //????????????
-			: m_KeyCode(keycode) {}
+		KeyEvent(int keycode) // 受保护的构造函数
+			: m_KeyCode(keycode) {
+		}
 
-		int m_KeyCode;  //????
+		int m_KeyCode;  // 键码
 	};
 
 	class HAZEL_API KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(int keycode, int repeatCount)
-			: KeyEvent(keycode), m_RepeatCount(repeatCount) {} 
+			: KeyEvent(keycode), m_RepeatCount(repeatCount) {
+		}
 
 		inline int GetRepeatCount() const { return m_RepeatCount; }
-		//???  ?????μ????  ??????μ?????????
+		// 用于  调试打印信息  返回包含键码和重复次数的字符串
 		std::string ToString() const override
 		{
 			std::stringstream ss;
@@ -35,14 +37,15 @@ namespace Hazel {
 
 		EVENT_CLASS_TYPE(KeyPressed)
 	private:
-		int m_RepeatCount;//???????  ????????0  ???????α?????
+		int m_RepeatCount; // 按键重复次数  第一次按下为0  之后持续按下会递增
 	};
 
 	class HAZEL_API KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(int keycode)
-			: KeyEvent(keycode) {}
+			: KeyEvent(keycode) {
+		}
 
 		std::string ToString() const override
 		{
@@ -58,9 +61,9 @@ namespace Hazel {
 	{
 	public:
 		KeyTypedEvent(int keycode)
-			: KeyEvent(keycode){
-		}		
-		//???  ?????μ????  ??????μ?????????
+			: KeyEvent(keycode) {
+		}
+		// 用于  调试打印信息  返回包含键码的字符串
 		std::string ToString() const override
 		{
 			std::stringstream ss;
@@ -68,7 +71,7 @@ namespace Hazel {
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(KeyTyped);
+		EVENT_CLASS_TYPE(KeyTyped)
 	};
 
 }
