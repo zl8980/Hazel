@@ -10,7 +10,10 @@
 
 namespace Hazel {
 #pragma region //全局变量和静态函数
-	static bool s_GLFWInitialized = false;
+
+	// 在文件顶部全局变量区域添加窗口计数器
+	static uint8_t s_GLFWWindowCount = 0;
+
 	//打印错误码 和 错误信息
 	static void GLFWErrorCallback(int error, const char* description)
 	{
@@ -19,9 +22,9 @@ namespace Hazel {
 
 
 	//与平台无关  基类接口实现
-	Window* Window::Create(const WindowProps& props)
+	Scope<Window> Window::Create(const WindowProps& props)
 	{
-		return new WindowsWindow(props);
+		return CreateScope<WindowsWindow>(props);
 	}
 #pragma endregion
 
@@ -31,16 +34,20 @@ namespace Hazel {
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
+		HZ_PROFILE_FUNCTION();
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		Shutdown();
 	}
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+		HZ_PROFILE_FUNCTION();
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -50,21 +57,28 @@ namespace Hazel {
 
 
 		//这里的判断是为了  初始化GLFW一次
-		if (!s_GLFWInitialized)
+		if (s_GLFWWindowCount == 0)
 		{
+			HZ_PROFILE_SCOPE("glfwInit");
 			// TODO: glfwTerminate on system shutdown
 			int success = glfwInit();//初始化GLFW
 			//如果开启断言 失败的时候会有断点 
 			HZ_CORE_ASSERT(success, "Could not intialize GLFW!");
 			//当GLFW出现错误  会回调该 GLFWErrorCallback
 			glfwSetErrorCallback(GLFWErrorCallback);
-			s_GLFWInitialized = true;
 		}
 
 
-		//通过GLFW_API 创建 GLFW窗口对象 与之关联的 OpenGL 上下文。
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		m_Context = new OpenGLContext(m_Window);
+		{
+			HZ_PROFILE_SCOPE("glfwCreateWindow");//给GLFW创建窗口的函数 添加一个性能分析的作用域
+			//通过GLFW_API 创建 GLFW窗口对象 与之关联的 OpenGL 上下文。
+			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+			++s_GLFWWindowCount;
+		}
+		
+
+
+		m_Context = CreateScope<OpenGLContext>(m_Window);
 		m_Context->Init();//初始化渲染上下文
 		
 		
@@ -177,17 +191,31 @@ namespace Hazel {
 
 	void WindowsWindow::Shutdown()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		//通过GLFW来销毁窗口
 		glfwDestroyWindow(m_Window);
+		--s_GLFWWindowCount;
+
+		if (s_GLFWWindowCount == 0)
+		{
+			glfwTerminate();
+		}
+
 	}
 
 	void WindowsWindow::OnUpdate()
 	{
+		HZ_PROFILE_FUNCTION();
+
+		glfwPollEvents();//处理GLFW事件
 		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
+		HZ_PROFILE_FUNCTION();
+
 		if (enabled)//垂直同步  交换间隔设置为1 会等待1帧的时间  交换间隔设置为0 就不等待  直接交换
 			glfwSwapInterval(1);
 		else

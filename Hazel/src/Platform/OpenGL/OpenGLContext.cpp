@@ -14,6 +14,8 @@ namespace Hazel {
 	
 	void OpenGLContext::Init()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		//设置GLFW窗口的上下文 == OpenGl上下文 并与 窗口进行绑定
 		glfwMakeContextCurrent(m_WindowHandle);
 		//加载OpenGL函数指针  这里的gladLoadGLLoader函数  用来加载OpenGL函数指针
@@ -24,10 +26,20 @@ namespace Hazel {
 		HZ_CORE_INFO("Vendor:{0}", (char*)glGetString(GL_VENDOR));
 		HZ_CORE_INFO("Renderer:{0}", (char*)glGetString(GL_RENDERER));
 		HZ_CORE_INFO("Version:{0}", (char*)glGetString(GL_VERSION));
+
+
+#ifdef HZ_ENABLE_ASSERTS
+		int versionMajor;
+		int versionMinor;
+		glGetIntegerv(GL_MAJOR_VERSION, &versionMajor);
+		glGetIntegerv(GL_MINOR_VERSION, &versionMinor);
+
+		HZ_CORE_ASSERT(versionMajor > 4 || (versionMajor == 4 && versionMinor >= 5), "Hazel requires at least OpenGL version 4.5!");
+#endif
 	}
 	void OpenGLContext::SwapBuffers()
 	{
-		glfwPollEvents();//拉取事件  处理事件
+		HZ_PROFILE_FUNCTION();
 		//交换缓冲区  这里的SwapBuffers函数  是我们在OpenGLContext类中实现的  通过GLFW来交换缓冲区
 		glfwSwapBuffers(m_WindowHandle);//交换缓冲区
 	}

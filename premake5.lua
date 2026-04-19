@@ -17,6 +17,7 @@ IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
 IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
 IncludeDir["ImGui"] = "Hazel/vendor/imgui"
 IncludeDir["glm"] = "Hazel/vendor/glm"
+IncludeDir["stb_image"] = "Hazel/vendor/stb_image"
 
 
 --我们已经有的预编译文件 在这个目录中存在premake5.lua	这种包含 会复制粘贴到我们的文件内容中
@@ -49,8 +50,10 @@ project "Hazel"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl"
+		"%{prj.name}/vendor/glm/glm/**.inl",
 	}
 
 	defines
@@ -66,7 +69,8 @@ project "Hazel"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	--链接库
@@ -86,7 +90,6 @@ project "Hazel"
 		--定义编译宏
 		defines
 		{
-			"HZ_PLATFORM_WINDOWS",
 			"HZ_BUILD_DLL",
 			"GLFW_INCLUDE_NONE", --当#include glfw 头文件的时候  不会包含任何OpenGL的头文件
 		}
@@ -146,13 +149,7 @@ project "Sandbox"
 
 	--过滤器  只是在windows系统下
 	filter "system:windows"		
-		systemversion "latest"	--用最新版本
-
-		--定义编译宏
-		defines
-		{
-			"HZ_PLATFORM_WINDOWS"
-		}		
+		systemversion "latest"	--用最新版本	
 
 	--过滤器 用于调试		所有的系统平台
 	filter "configurations:Debug"

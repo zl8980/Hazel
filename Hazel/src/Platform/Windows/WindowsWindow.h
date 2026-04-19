@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hazel/Window.h"
+#include "Hazel/Core/Window.h"
 #include "Hazel/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>  //不会包含任何OpenGL的头文件  因为在premake5.lua中定义了"GLFW_INCLUDE_NONE"
@@ -37,7 +37,8 @@ namespace Hazel {
 		//定义一个GLFW窗口
 		GLFWwindow* m_Window;
 		//渲染上下文  
-		GraphicsContext* m_Context;
+		Scope<GraphicsContext> m_Context;
+
 		//窗口数据  --把这个传给GLFW
 		struct WindowData
 		{

@@ -1,12 +1,19 @@
-[submodule "Hazel/vendor/spdlog"]
-	path = Hazel/vendor/spdlog
-	url = https://github.com/gabime/spdlog
-[submodule "Hazel/vendor/GLFW"]
-	path = Hazel/vendor/GLFW
-	url = https://github.com/TheCherno/glfw
-[submodule "Hazel/vendor/imgui"]
-	path = Hazel/vendor/imgui
-	url = https://github.com/TheCherno/imgui
-[submodule "Hazel/vendor/glm"]
-	path = Hazel/vendor/glm
-	url = https://github.com/g-truc/glm
+[submodule "Hazel/vendor/spdlog"]  	 	# 定义子模块名称（标识符），路径为 Hazel/vendor/spdlog 
+    path = Hazel/vendor/spdlog     	 	# 子模块在本地仓库中的存储路径 
+    url = https://github.com/gabime/spdlog   	# 子模块的远程仓库地址
+    branch = v1.x                  			# 指定跟踪的分支（此处为 spdlog 库的 v1.x 稳定分支）
+ 
+[submodule "Hazel/vendor/GLFW"]    		# GLFW 子模块（跨平台窗口/输入库）
+    path = Hazel/vendor/GLFW        		# 本地路径 
+    url = https://github.com/TheCherno/glfw   	# Cherno 维护的 GLFW 分支（可能含定制化修改）
+    branch = master                			# 跟踪主分支 
+ 
+[submodule "Hazel/vendor/imgui"]   		# ImGui 子模块（图形用户界面库）
+    path = Hazel/vendor/imgui       		# 本地路径
+    url = https://github.com/TheCherno/imgui   	# Cherno 维护的 ImGui 分支（含 docking 功能）
+    branch = docking               			# 跟踪 docking 分支（支持窗口停靠特性）
+ 
+[submodule "Hazel/vendor/glm"]    		# GLM 子模块（OpenGL 数学库）
+    path = Hazel/vendor/glm        		# 本地路径 
+    url = https://github.com/g-truc/glm   		# 官方仓库地址 
+    branch = master                			# 跟踪主分支

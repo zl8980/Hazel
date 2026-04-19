@@ -8,6 +8,10 @@ namespace Hazel
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);
 
+		//设置摄像机的投影矩阵
+		void SetProjection(float left, float right, float bottom, float top);
+
+
 		//设置摄像机的位置
 		void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
 
@@ -19,6 +23,8 @@ namespace Hazel
 
 		//获取摄像机 绕Z轴的旋转角度
 		float GetRotation() { return m_Rotation; }
+
+
 
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }

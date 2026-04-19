@@ -5,7 +5,7 @@
 #include "examples/imgui_impl_opengl3.h"
 #include "examples/imgui_impl_glfw.h"
 
-#include "Hazel/Application.h"
+#include "Hazel/Core/Application.h"
 
 //临时加入
 #include <GLFW/glfw3.h>
@@ -25,6 +25,8 @@ namespace Hazel {
 	//相当于  初始化操作 
 	void ImGuiLayer::OnAttach()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -53,28 +55,32 @@ namespace Hazel {
 
 
 		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplGlfw_InitForOpenGL(window, false);
 		//使用410 glsl版本
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
 	void ImGuiLayer::OnDetach()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		// Cleanup
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 	}
 
-	void ImGuiLayer::OnImGuiRender()
+	/*void ImGuiLayer::OnImGuiRender()
 	{
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
-	}
+	}*/
 
 
 	void ImGuiLayer::Begin()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -82,6 +88,8 @@ namespace Hazel {
 
 	void ImGuiLayer::End()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());

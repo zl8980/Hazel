@@ -1,11 +1,11 @@
 #include "hzpch.h"
 #include "WindowsInput.h"
 
-#include "Hazel/Application.h"
+#include "Hazel/Core/Application.h"
 #include <GLFW/glfw3.h>
 namespace Hazel {
 	//静态成员变量初始化 编译的时候分配内存  程序启动的时候就创建了一个WindowsInput对象 赋值给s_Instance 
-	Input* Input::s_Instance = new WindowsInput();
+	Scope<Input> Input::s_Instance = CreateScope<WindowsInput>();
 
 
 	bool WindowsInput::IsKeyPressedImpl(int keycode)
